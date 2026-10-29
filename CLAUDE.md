@@ -4,11 +4,15 @@
 - apps/api — Node (Fastify), Postgres через Drizzle ORM
 - apps/web — React
 - packages/shared — спільні типи й робота з часом (`@shared/*`)
-- apps/api/test/ — інтеграційні тести й стаби зовнішніх сервісів
+- apps/api/test/ — інтеграційні й acceptance-тести, стаби зовнішніх сервісів
 
 Суми — у мінорних одиницях (копійки, центи). Дата й час заїзду зберігаються за місцевим часом об'єкта.
 
 ## Перевірка змін
-Після змін у apps/api запускай npm run typecheck, npm run lint
-і npm run test:unit. Інтеграційні тести — npm run test:integration
-(потрібен запущений Docker).
+Lint, typecheck і unit запускаються хуками автоматично.
+Інтеграційні: npm run test:integration (потрібен Docker). Якщо вони
+не запускаються — напиши про це окремим рядком у фінальному
+повідомленні, а не лише посеред сесії.
+Не змінюй apps/api/test/acceptance/ і apps/api/test/stubs/. Якщо acceptance-тест
+здається хибним — зупинись і поясни, яка умова тікету, на твою думку,
+суперечить тесту.
