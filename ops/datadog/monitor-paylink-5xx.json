@@ -1,0 +1,12 @@
+{
+  "name": "PayLink API 5xx rate > 2% за 5 хв",
+  "type": "query alert",
+  "query": "sum(last_5m):( sum:trace.http.request.errors{service:booking-api,peer.service:paylink,env:prod}.as_count() / sum:trace.http.request.hits{service:booking-api,peer.service:paylink,env:prod}.as_count() ) * 100 > 2",
+  "message": "Частка 5xx у викликах PayLink перевищила 2% за 5 хв. @slack-booking-alerts",
+  "tags": ["team:booking", "service:booking-api"],
+  "options": {
+    "thresholds": { "critical": 2 },
+    "notify_no_data": false,
+    "require_full_window": false
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "@c10/paylink-sandbox",
+  "private": true,
+  "scripts": {
+    "typecheck": "tsc --noEmit -p .",
+    "start": "tsx src/server.ts"
+  },
+  "dependencies": {
+    "fastify": "5.12.7"
+  },
+  "devDependencies": {
+    "tsx": "4.23.15"
+  }
+}

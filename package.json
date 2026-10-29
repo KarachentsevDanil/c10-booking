@@ -1,0 +1,36 @@
+{
+  "name": "c10-booking",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*",
+    "tools/*",
+    "e2e"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json && npm run typecheck --workspaces --if-present",
+    "lint": "eslint .",
+    "test:unit": "jest --selectProjects unit",
+    "test:integration": "jest --selectProjects integration --runInBand",
+    "test:e2e": "npm run test --workspace e2e",
+    "db:up": "docker compose up -d postgres",
+    "db:migrate": "npm run db:migrate --workspace @c10/api",
+    "db:seed": "npm run db:seed --workspace @c10/api",
+    "dev:api": "npm run dev --workspace @c10/api",
+    "dev:web": "npm run dev --workspace @c10/web",
+    "dev:paylink": "npm run start --workspace @c10/paylink-sandbox"
+  },
+  "devDependencies": {
+    "@testcontainers/postgresql": "12.2.1",
+    "@types/jest": "30.0.0",
+    "@types/node": "22.20.5",
+    "eslint": "10.13.0",
+    "jest": "30.5.2",
+    "ts-jest": "29.4.15",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.72.1"
+  }
+}

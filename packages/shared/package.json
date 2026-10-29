@@ -1,0 +1,13 @@
+{
+  "name": "@c10/shared",
+  "private": true,
+  "scripts": {
+    "typecheck": "tsc --noEmit -p ."
+  },
+  "dependencies": {
+    "luxon": "3.7.2"
+  },
+  "devDependencies": {
+    "@types/luxon": "3.7.6"
+  }
+}
