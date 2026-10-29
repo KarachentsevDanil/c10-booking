@@ -1,0 +1,9 @@
+# .github/CODEOWNERS
+/apps/api/test/acceptance/   @booking-team/leads
+/apps/api/test/stubs/        @booking-team/leads
+/.github/workflows/          @booking-team/leads
+/.claude/settings.json       @booking-team/leads
+/.claude/hooks/              @booking-team/leads
+**/tsconfig*.json            @booking-team/leads
+**/eslint.config.*           @booking-team/leads
+**/jest.config.*             @booking-team/leads
