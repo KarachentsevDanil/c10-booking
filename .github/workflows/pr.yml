@@ -1,5 +1,6 @@
 # Обов'язкові перевірки PR. У branch protection для main required:
-# typecheck, lint, unit, integration; 1 approve від рев'юера.
+# typecheck, lint, unit, integration, acceptance; 1 approve від рев'юера
+# і обов'язкове рев'ю від code owners (.github/CODEOWNERS).
 name: pr
 
 on:
@@ -43,3 +44,13 @@ jobs:
       - run: npm ci
       # Testcontainers використовує Docker раннера
       - run: npm run test:integration
+
+  # Без умови if: — пропущений за умовою job може мати успішний статус і не блокувати злиття.
+  acceptance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - run: npm run test:acceptance
