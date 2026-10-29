@@ -1,6 +1,6 @@
 import type { Db } from "../db";
 
-export type EventType = "booking.created";
+export type EventType = "booking.created" | "booking.cancelled";
 
 /** Публікує подію в outbox; сервіс нотифікацій забирає її звідти. */
 export function eventPublisher(db: Db) {

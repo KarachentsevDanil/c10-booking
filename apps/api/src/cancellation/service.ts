@@ -1,5 +1,6 @@
 import type { Db } from "../db";
 import { ConflictError } from "../errors";
+import { eventPublisher } from "../events/publish";
 import type { PayLinkClient } from "../payments/paylink";
 import type { Booking } from "../types";
 import { calculateRefund } from "./refund";
@@ -10,6 +11,7 @@ export function cancellationService(
   clock: () => Date = () => new Date(),
 ) {
   const { bookings, properties } = db;
+  const publishEvent = eventPublisher(db);
 
   return {
     async cancelBooking(bookingId: string): Promise<Booking> {
@@ -34,6 +36,7 @@ export function cancellationService(
         });
         await bookings.markRefunded(booking.id, refund.id);
       }
+      await publishEvent("booking.cancelled", { bookingId: booking.id });
 
       return bookings.findById(booking.id);
     },
