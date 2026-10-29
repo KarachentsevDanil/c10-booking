@@ -26,5 +26,11 @@ module.exports = {
       testMatch: ["<rootDir>/apps/api/test/integration/**/*.test.ts"],
       testTimeout: 120_000,
     },
+    {
+      ...common,
+      displayName: "acceptance",
+      testMatch: ["<rootDir>/apps/api/test/acceptance/**/*.test.ts"],
+      testTimeout: 120_000,
+    },
   ],
 };
