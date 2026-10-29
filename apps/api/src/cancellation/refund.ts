@@ -20,7 +20,8 @@ export function calculateRefund(
 
 function refundShare(policy: CancellationPolicy, hoursBefore: number): number {
   switch (policy) {
-    case "flexible": return hoursBefore > 24 ? 1 : 0;
-    case "strict":   return hoursBefore > 7 * 24 ? 0.5 : 0;
+    case "flexible": return hoursBefore >= 24 ? 1 : 0;
+    case "moderate": return hoursBefore >= 48 ? 1 : hoursBefore > 0 ? 0.5 : 0;
+    case "strict":   return hoursBefore >= 7 * 24 ? 0.5 : 0;
   }
 }
