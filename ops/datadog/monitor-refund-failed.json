@@ -1,0 +1,11 @@
+{
+  "name": "PayLink: refund.failed",
+  "type": "log alert",
+  "query": "logs(\"service:booking-api env:prod @event.type:refund.failed\").index(\"*\").rollup(\"count\").last(\"15m\") > 0",
+  "message": "PayLink відхилив повернення. Перевір бронювання з цим refundId: статус refunded без refund.succeeded означає, що гість грошей не отримав. @slack-booking-alerts",
+  "tags": ["team:booking", "service:booking-api"],
+  "options": {
+    "thresholds": { "critical": 0 },
+    "notify_no_data": false
+  }
+}
