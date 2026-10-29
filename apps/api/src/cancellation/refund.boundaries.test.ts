@@ -29,12 +29,41 @@ describe.each([
   ["strict", "Kyiv", kyiv, "2026-09-27T13:00:00Z", "6 днів 23 год", 0],
   ["strict", "New York", newYork, "2026-09-27T19:00:00Z", "7 днів 1 год", 0.5],
   ["strict", "New York", newYork, "2026-09-27T21:00:00Z", "6 днів 23 год", 0],
+  ["moderate", "Kyiv", kyiv, "2026-10-02T11:00:00Z", "49 год", 1],
+  ["moderate", "Kyiv", kyiv, "2026-10-02T13:00:00Z", "47 год", 0.5],
+  ["moderate", "Kyiv", kyiv, "2026-10-04T11:00:00Z", "1 год", 0.5],
+  ["moderate", "Kyiv", kyiv, "2026-10-04T13:00:00Z", "−1 год (після заїзду)", 0],
+  ["moderate", "New York", newYork, "2026-10-02T19:00:00Z", "49 год", 1],
+  ["moderate", "New York", newYork, "2026-10-02T21:00:00Z", "47 год", 0.5],
+  ["moderate", "New York", newYork, "2026-10-04T21:00:00Z", "−1 год (після заїзду)", 0],
 ] as const)("%s, %s", (policy, _city, prop, cancelledAtIso, before, share) => {
   it(`скасовано ${cancelledAtIso}, до заїзду ${before} → частка ${share}`, () => {
     const booking = makeBooking({ policy, checkInDate: "2026-10-04", accommodationMinor: 840000 });
     const decision = calculateRefund(booking, prop, new Date(cancelledAtIso));
     expect(decision).toEqual({ share, amountMinor: 840000 * share });
   });
+});
+
+// «Щонайменше за N год»: рівно на межі повернення ще діє.
+it.each([
+  ["flexible", "2026-10-03T12:00:00Z", "24 год", 1],
+  ["moderate", "2026-10-02T12:00:00Z", "48 год", 1],
+  ["strict", "2026-09-27T12:00:00Z", "7 днів", 0.5],
+] as const)("%s, Kyiv: рівно на межі (скасовано %s, до заїзду %s) → частка %s", (policy, cancelledAtIso, _before, share) => {
+  const booking = makeBooking({ policy, checkInDate: "2026-10-04", accommodationMinor: 840000 });
+  expect(calculateRefund(booking, kyiv, new Date(cancelledAtIso)).share).toBe(share);
+});
+
+it("moderate: скасування за 45,5 год до заїзду → 50%, 4 200,00 грн", () => {
+  const booking = makeBooking({
+    policy: "moderate",
+    checkInDate: "2026-10-04",
+    accommodationMinor: 840000,
+    serviceFeeMinor: 105000,
+  });
+  // заїзд 04.10 о 15:00 за Києвом (12:00 UTC)
+  const decision = calculateRefund(booking, kyiv, new Date("2026-10-02T14:30:00Z"));
+  expect(decision).toEqual({ share: 0.5, amountMinor: 420000 });
 });
 
 it("сервісний збір не повертається: частка рахується лише від вартості проживання", () => {
