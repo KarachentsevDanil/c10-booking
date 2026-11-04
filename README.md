@@ -58,3 +58,13 @@ npm run dev:web        # web на :5173
 CI — `.github/workflows/pr.yml`. Branch protection для `main` (налаштовується в GitHub): обов'язкові перевірки `typecheck`, `lint`, `unit`, `integration` і 1 approve. Нічний e2e (`e2e-nightly.yml`) у гейт не входить.
 
 Прод-моніторинг: Sentry (необроблені винятки API, вмикається змінною `SENTRY_DSN`), Datadog (`ops/datadog`).
+
+## Відмінності від тексту курсу
+
+Ця гілка додає до перевірок вище acceptance-тест (`npm run test:acceptance`, потрібен Docker), обов'язковий job `acceptance` у `pr.yml`, хуки Claude Code і CODEOWNERS. Репозиторій відтворює кейс і теорію 2 за змістом. Де код розходиться з текстом курсу:
+
+- `npm run typecheck` на цій гілці червоний. Стаб PayLink з теорії 2 повертає `refundStatus` типу `string`, а тип відповіді `refunds.create` у клієнті знає лише `"succeeded"`, тому acceptance-тест та інтеграційні тести падають на TS2345. Через це червоні job `typecheck` і Stop-хук. Виправляти треба тип клієнта разом з умовою 5, а не стаб.
+- Старий інтеграційний тест «скасування повертає кошти й оновлює статус» з новим стабом лишається зеленим: `cancelBooking` не дивиться на статус повернення і ставить `refunded` за будь-якої відповіді PayLink. Червоний лише acceptance-тест.
+- `calculateRefund` приймає `property: Pick<Property, "timezone" | "checkInTime">`, а не `Property`, як у фрагменті кейсу: тест меж передає об'єкт із двох полів, і з повним `Property` typecheck червоний.
+- e2e (`e2e/tests/cancellation.spec.ts`) покриває flexible і strict, без moderate. Це тести QA, PR агента їх не змінював, а в таблиці кейсу сказано «для кожної політики».
+- Хукам Claude Code потрібен `jq`.
